@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">BlueStack Demo</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_banner">Banner</string>
+    <string name="menu_mrec">MREC</string>
+    <string name="menu_interstitial">Interstitial</string>
+    <string name="menu_rewarded">Rewarded Video</string>
+    <string name="load_interstitial">Load Interstitial</string>
+    <string name="show_interstitial">Show Interstitial</string>
+    <string name="load_rewarded">Load Rewarded Ad</string>
+    <string name="show_rewarded">Show Rewarded Ad</string>
+    <string name="hide_mrec">Hide MREC</string>
+    <string name="show_mrec">Show MREC</string>
+    <string name="load">Load</string>
+    <string name="hide">Hide</string>
+    <string name="show">Show</string>
+    <string name="hide_banner">Hide Banner</string>
+    <string name="show_banner">Show Banner</string>
+    <string name="toggle_refresh">Toggle Refresh</string>
+    <string name="remove">Remove</string>
+    <string name="standard">Standard</string>
+    <string name="full">Full</string>
+    <string name="large">Large</string>
+    <string name="leader">Leader</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="consent_manager">Consent Manager</string>
+    <string name="consent_message">We would like to read out your device identifier for targeted Ads</string>
+</resources>
