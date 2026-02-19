@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Optional: Allows the SDK to access approximate location data based on cell towers to improve targeting. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- Optional: Allows the SDK to access precise location data via GPS to improve targeting. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.BlueStackDemo">
+        <!--
+        SDK Initialization Options:
+        - SplashScreenActivity: System-integrated splash (Android 12+)
+        - CustomLauncherActivity: Custom splash layout (full control)
+        Both navigate to MainActivity after SDK initialization.
+        
+        NOTE: This demo uses android:screenOrientation="portrait" for consistent UX.
+        For production, consider "unspecified", "fullSensor" or whatever works best for your app.
+        -->
+
+        <!-- Option 1: System-integrated splash (comment to use Option 2) -->
+        <!--<activity
+            android:name=".SplashScreenActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BlueStackDemo.SplashScreenAPI">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>-->
+
+        <!-- Option 2: Custom splash layout (uncomment to use this option) -->
+        <activity
+            android:name=".CustomLauncherActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BlueStackDemo.Splash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.BlueStackDemo.NoActionBar" />
+    </application>
+
+</manifest>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_banner">
+
+    <fragment
+        android:id="@+id/nav_banner"
+        android:name="com.azerion.bluestack.demo.kotlin.banner.BannerAdTabFragment"
+        android:label="@string/menu_banner"
+        tools:layout="@layout/fragment_banner_ad_tab" />
+
+    <fragment
+        android:id="@+id/nav_mrec"
+        android:name="com.azerion.bluestack.demo.kotlin.banner.MrecFragment"
+        android:label="@string/menu_mrec"
+        tools:layout="@layout/fragment_mrec" />
+
+    <fragment
+        android:id="@+id/nav_interstitial"
+        android:name="com.azerion.bluestack.demo.kotlin.InterstitialFragment"
+        android:label="@string/menu_interstitial"
+        tools:layout="@layout/fragment_interstitial" />
+
+    <fragment
+        android:id="@+id/nav_rewarded_ad"
+        android:name="com.azerion.bluestack.demo.kotlin.RewardedAdFragment"
+        android:label="@string/menu_rewarded"
+        tools:layout="@layout/fragment_rewarded_ad" />
+</navigation>
