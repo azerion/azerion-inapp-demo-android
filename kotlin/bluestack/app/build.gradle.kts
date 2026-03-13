@@ -52,4 +52,5 @@ dependencies {
     implementation(libs.bluestack.sdk.core)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.preference.ktx)
+    implementation(libs.androidx.lifecycle.process)
 }

@@ -2,11 +2,14 @@ package com.azerion.bluestack.demo.kotlin
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.azerion.bluestack.BlueStack
+import com.azerion.bluestack.MobileAds
 import com.azerion.bluestack.demo.kotlin.databinding.ActivitySplashBinding
 import com.azerion.bluestack.initialization.InitializationListener
-import com.azerion.bluestack.initialization.InitializationStatus
+import com.azerion.bluestack.initialization.SDKInitializationStatus
+import java.util.concurrent.TimeUnit
 
 /**
  * SDK initialization using custom splash screen layout.
@@ -38,9 +41,10 @@ class CustomLauncherActivity : AppCompatActivity() {
     }
 
     private fun initializeBlueStackSDK() {
-        BlueStack.initialize(this, Constants.APP_ID, object : InitializationListener {
-            override fun onInitialized(status: InitializationStatus) {
-                status.adapterStatusMap.forEach { (adNetworkName, adapterStatus) ->
+        MobileAds.setDebugModeEnabled(true)
+        MobileAds.initialize(this, Constants.APP_ID, object : InitializationListener {
+            override fun onInitialized(status: SDKInitializationStatus) {
+                status.mediationAdapterStatusMap.forEach { (adNetworkName, adapterStatus) ->
                     Logger.d(
                         TAG,
                         "AdNetwork: $adNetworkName, " +
@@ -49,10 +53,15 @@ class CustomLauncherActivity : AppCompatActivity() {
                                 "Description: ${adapterStatus.description}"
                     )
                 }
-
-                navigateToMainActivity()
+                this@CustomLauncherActivity.runOnUiThread {
+                    (application as MyApplication).loadAd(this@CustomLauncherActivity)
+                }
             }
         })
+
+        // Create a timer so that the CustomLauncherActivity is displayed for a fixed duration,
+        // giving the SDK enough time to load and show the app‑open ad.
+        createTimer()
     }
 
     private fun navigateToMainActivity() {
@@ -61,5 +70,34 @@ class CustomLauncherActivity : AppCompatActivity() {
         }
         startActivity(intent)
         finish()
+    }
+
+    /**
+     Create the countdown timer, which counts down to zero and show the app open ad.
+     */
+    private fun createTimer() {
+        val countDownTimer: CountDownTimer =
+            object : CountDownTimer(Constants.SPLASH_COUNTER_TIME_MILLISECONDS, 1000) {
+                override fun onTick(millisUntilFinished: Long) {
+                    Log.d(
+                        TAG,
+                        "App is done loading in: ${
+                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) + 1
+                        }"
+                    )
+                }
+
+                override fun onFinish() {
+                    (application as MyApplication).showAdIfAvailable(
+                        this@CustomLauncherActivity,
+                        object : AppOpenAdManager.OnShowAdCompleteListener {
+                            override fun onShowAdComplete() {
+                                navigateToMainActivity()
+                            }
+                        },
+                    )
+                }
+            }
+        countDownTimer.start()
     }
 }

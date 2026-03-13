@@ -2,7 +2,7 @@ package com.azerion.bluestack.demo.kotlin.banner
 
 import android.content.Context
 import com.azerion.bluestack.RequestOptions
-import com.azerion.bluestack.banner.AdSize
+import com.azerion.bluestack.banner.BannerAdSize
 import com.azerion.bluestack.banner.BannerView
 import com.azerion.bluestack.banner.BannerViewListener
 import com.azerion.bluestack.demo.kotlin.Logger
@@ -14,7 +14,7 @@ import com.azerion.bluestack.util.Size
  */
 class BannerAdViewModel(
     private val context: Context,
-    val adSize: AdSize,
+    val adSize: BannerAdSize,
     val placementId: String
 ) {
     private val TAG = "BannerAdViewModel"

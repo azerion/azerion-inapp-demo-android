@@ -2,7 +2,6 @@ package com.azerion.bluestack.demo.kotlin
 
 import android.view.View
 import android.widget.Button
-import com.mngads.util.MNGDebugLog
 
 fun View.show() {
     visibility = View.VISIBLE

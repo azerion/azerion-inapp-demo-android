@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.azerion.bluestack.banner.AdSize
+import com.azerion.bluestack.banner.BannerAdSize
 import com.azerion.bluestack.demo.kotlin.Constants
 import com.azerion.bluestack.demo.kotlin.Logger
 import com.azerion.bluestack.demo.kotlin.R
@@ -40,7 +40,7 @@ class MrecFragment : Fragment(), BannerAdListener {
             bannerAdManager = BannerAdManager(
                 context = requireContext(),
                 placementId = Constants.MREC_PLACEMENT_ID,
-                adSize = AdSize.MEDIUM_RECTANGLE,
+                adSize = BannerAdSize.MEDIUM_RECTANGLE,
                 listener = this
             )
         }

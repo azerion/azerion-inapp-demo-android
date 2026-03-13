@@ -1,7 +1,7 @@
 package com.azerion.bluestack.demo.kotlin.banner
 
 import androidx.annotation.StringRes
-import com.azerion.bluestack.banner.AdSize
+import com.azerion.bluestack.banner.BannerAdSize
 import com.azerion.bluestack.demo.kotlin.R
 
 /**
@@ -12,13 +12,13 @@ import com.azerion.bluestack.demo.kotlin.R
  * for conversions.
  */
 enum class BannerAdSizeConfig(
-    val adSize: AdSize,
+    val adSize: BannerAdSize,
     @param:StringRes val labelResId: Int
 ) {
-    STANDARD(AdSize.BANNER, R.string.standard),
-    FULL(AdSize.FULL_BANNER, R.string.full),
-    LARGE(AdSize.LARGE_BANNER, R.string.large),
-    LEADER(AdSize.LEADERBOARD, R.string.leader);
+    STANDARD(BannerAdSize.BANNER, R.string.standard),
+    FULL(BannerAdSize.FULL_BANNER, R.string.full),
+    LARGE(BannerAdSize.LARGE_BANNER, R.string.large),
+    LEADER(BannerAdSize.LEADERBOARD, R.string.leader);
 
     companion object {
         /**
