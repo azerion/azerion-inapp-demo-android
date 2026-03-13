@@ -9,6 +9,10 @@ object Constants {
     const val MREC_PLACEMENT_ID = "/${APP_ID}/mrec"
     const val INTERSTITIAL_PLACEMENT_ID = "/${APP_ID}/interstitial"
     const val REWARDED_VIDEO_PLACEMENT_ID = "/${APP_ID}/rewarded"
+    const val APP_OPEN_PLACEMENT_ID = "/${APP_ID}/appOpen"
+
+    // Splash screen timer duration in milliseconds - simulates app loading time
+    const val SPLASH_COUNTER_TIME_MILLISECONDS = 5000L
 
     // Dummy CMP data
     const val IABTCF_TCString = "IABTCF_TCString"

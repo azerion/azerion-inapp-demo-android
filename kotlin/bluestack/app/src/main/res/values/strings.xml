@@ -11,10 +11,6 @@
     <string name="menu_mrec">MREC</string>
     <string name="menu_interstitial">Interstitial</string>
     <string name="menu_rewarded">Rewarded Video</string>
-    <string name="load_interstitial">Load Interstitial</string>
-    <string name="show_interstitial">Show Interstitial</string>
-    <string name="load_rewarded">Load Rewarded Ad</string>
-    <string name="show_rewarded">Show Rewarded Ad</string>
     <string name="hide_mrec">Hide MREC</string>
     <string name="show_mrec">Show MREC</string>
     <string name="load">Load</string>

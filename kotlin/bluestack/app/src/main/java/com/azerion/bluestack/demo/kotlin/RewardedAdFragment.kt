@@ -34,9 +34,6 @@ class RewardedAdFragment : Fragment(), RewardedAdListener {
     }
 
     private fun initiateViews() {
-        binding.llActions.btnLoad.text = getString(R.string.load_rewarded)
-        binding.llActions.btnShow.text = getString(R.string.show_rewarded)
-
         binding.llActions.btnLoad.setOnClickListener {
             loadAd()
         }

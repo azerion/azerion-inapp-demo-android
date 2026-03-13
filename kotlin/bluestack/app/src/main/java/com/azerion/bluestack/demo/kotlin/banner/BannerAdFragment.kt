@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.azerion.bluestack.banner.AdSize
+import com.azerion.bluestack.banner.BannerAdSize
 import com.azerion.bluestack.demo.kotlin.Constants
 import com.azerion.bluestack.demo.kotlin.Logger
 import com.azerion.bluestack.demo.kotlin.R
@@ -22,14 +22,14 @@ class BannerAdFragment : Fragment(), BannerAdListener {
     private var _binding: FragmentBannerAdBinding? = null
     private val binding get() = _binding!!
 
-    private var bannerAdSize: AdSize = AdSize.BANNER
+    private var bannerAdSize: BannerAdSize = BannerAdSize.BANNER
 
     private val listItems: MutableList<ContentItem> = ArrayList()
     private lateinit var adapter: BannerAdsAdapter
-    
+
     // BannerAdManager to handle all banner ad lifecycle
     private var bannerAdManager: BannerAdManager? = null
-    
+
     // Maximum number of banner ads to create (for performance/demo purposes)
     private val maxBannerAds = 10
 
@@ -39,7 +39,7 @@ class BannerAdFragment : Fragment(), BannerAdListener {
             val configName = it.getString(ARG_BANNER_CONFIG_NAME)
             bannerAdSize = configName?.let { name ->
                 BannerAdSizeConfig.Companion.fromConfigName(name).adSize
-            } ?: AdSize.BANNER
+            } ?: BannerAdSize.BANNER
         }
     }
 
@@ -156,7 +156,7 @@ class BannerAdFragment : Fragment(), BannerAdListener {
 
     // Determine if this is a standard banner size (320x50)
     private fun isStandardBanner(): Boolean {
-        return bannerAdSize == AdSize.BANNER
+        return bannerAdSize == BannerAdSize.BANNER
     }
 
     /**
