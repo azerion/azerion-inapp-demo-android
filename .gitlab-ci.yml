@@ -1,0 +1,116 @@
+# Managed by bluestack-git-hygiene-checker.
+# Jobs run in the always-present `.pre` and `.post` stages, so this coexists
+# with any `stages:` you add later.
+
+# ── git-hygiene gates (added by bluestack-git-hygiene-checker) ──
+
+git-hygiene:changelog-trailer:
+  stage: .pre
+  image: alpine:3.24
+  variables:
+    GIT_STRATEGY: none
+  rules:
+    # Local overrule: set GIT_HYGIENE_SKIP=true (all gates) or
+    # GIT_HYGIENE_SKIP_CHANGELOG_TRAILER=true (this gate) — in variables: or as
+    # a project CI/CD variable. The job stays defined (the audit still
+    # validates the setup); it just never runs.
+    - if: $GIT_HYGIENE_SKIP == "true" || $GIT_HYGIENE_SKIP_CHANGELOG_TRAILER == "true"
+      when: never
+    # release/* and staging -> main are release paths: merged with a merge
+    # commit, their commits carry their own trailers. renovate/* MRs are
+    # written by the bot.
+    - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^(release|renovate)\// || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "staging"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - |
+      if [ "$CI_MERGE_REQUEST_DESCRIPTION_IS_TRUNCATED" = "true" ]; then
+        echo "ERROR  the MR description is too long for CI to read its last line" >&2
+        echo "Keep the description to a few lines (MR2) and rerun this pipeline." >&2
+        exit 1
+      fi
+      LAST=$(printf '%s\n' "$CI_MERGE_REQUEST_DESCRIPTION" | tr -d '\r' | sed 's/[[:space:]]*$//' | grep -v '^$' | tail -n 1)
+      if printf '%s\n' "$LAST" | grep -Eqx 'Changelog: (added|changed|deprecated|removed|fixed|security)'; then
+        echo "OK  $LAST"
+      else
+        echo "ERROR  the MR description does not end with a valid Changelog: trailer" >&2
+        echo "Last line: ${LAST:-<empty>}" >&2
+        echo "Allowed: Changelog: added | changed | deprecated | removed | fixed | security" >&2
+        echo "Editing the description doesn't start a pipeline: rerun it after fixing the trailer." >&2
+        exit 1
+      fi
+
+git-hygiene:changelog:
+  stage: .pre
+  image: alpine:3.24
+  variables:
+    GIT_DEPTH: "0"
+  rules:
+    # Local overrule: set GIT_HYGIENE_SKIP=true (all gates) or
+    # GIT_HYGIENE_SKIP_CHANGELOG=true (this gate) — in variables: or as a
+    # project CI/CD variable. The job stays defined (the audit still validates
+    # the setup); it just never runs.
+    - if: $GIT_HYGIENE_SKIP == "true" || $GIT_HYGIENE_SKIP_CHANGELOG == "true"
+      when: never
+    # Only published repositories keep a hand-written CHANGELOG.md (CL2):
+    # everything under bluestack/sdk, unless GIT_HYGIENE_PUBLIC_CHANGELOG says otherwise.
+    - if: $GIT_HYGIENE_PUBLIC_CHANGELOG == "false"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^(feat|feature|bugfix|chore|ci)\// && ($GIT_HYGIENE_PUBLIC_CHANGELOG == "true" || $CI_PROJECT_NAMESPACE =~ /^bluestack\/sdk(\/|$)/)
+  before_script:
+    - apk add --no-cache git
+    - git fetch origin "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+  script:
+    - |
+      if git diff --name-only "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}...HEAD" | grep -qx "CHANGELOG.md"; then
+        echo "OK  CHANGELOG.md updated"
+      else
+        echo "ERROR  CHANGELOG.md was not updated in this MR" >&2
+        echo "In a published repository, feat/, feature/, bugfix/, chore/, ci/ branches must add a CHANGELOG.md entry." >&2
+        exit 1
+      fi
+
+git-hygiene:version-bump:
+  stage: .pre
+  image: alpine:3.24
+  rules:
+    # Local overrule: GIT_HYGIENE_SKIP=true (all gates) or
+    # GIT_HYGIENE_SKIP_VERSION_BUMP=true (this gate) — job stays defined, never runs.
+    - if: $GIT_HYGIENE_SKIP == "true" || $GIT_HYGIENE_SKIP_VERSION_BUMP == "true"
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"
+  before_script:
+    - apk add --no-cache git jq
+    - git fetch origin "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" --depth=1
+  script:
+    - |
+      # Detect a version file, else skip (never false-fail a non-package repo).
+      # composer.json outranks package.json: our PHP apps carry both, but the
+      # version is managed in composer.
+      if [ -f composer.json ]; then FILE=composer.json; KIND=json;
+      elif [ -f package.json ]; then FILE=package.json; KIND=json;
+      elif [ -f pubspec.yaml ]; then FILE=pubspec.yaml; KIND=pubspec;
+      elif [ -f VERSION ]; then FILE=VERSION; KIND=plain;
+      else echo "No known version manifest (composer.json/package.json/pubspec.yaml/VERSION) — skipping."; exit 0; fi
+      read_ver() {
+        case "$KIND" in
+          json) jq -r '.version // empty' "$1" ;;
+          pubspec) sed -n 's/^version:[[:space:]]*//p' "$1" | head -n1 ;;
+          plain) head -n1 "$1" ;;
+        esac
+      }
+      HEAD_V=$(read_ver "$FILE")
+      git show "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}:${FILE}" > .target_manifest 2>/dev/null || { echo "Target has no ${FILE} yet — skipping."; exit 0; }
+      TARGET_V=$(read_ver .target_manifest)
+      echo "MR ${FILE}: ${HEAD_V} / target: ${TARGET_V}"
+      if [ -z "$HEAD_V" ]; then echo "Could not read version from ${FILE} — skipping."; exit 0; fi
+      if [ "$HEAD_V" = "$TARGET_V" ]; then
+        echo "ERROR  version in ${FILE} was not bumped (still ${HEAD_V})" >&2
+        exit 1
+      fi
+      LOWER=$(printf "%s\n%s\n" "$TARGET_V" "$HEAD_V" | sort -V | head -n1)
+      if [ "$LOWER" != "$TARGET_V" ]; then
+        echo "ERROR  new version ${HEAD_V} is lower than current ${TARGET_V}" >&2
+        exit 1
+      fi
+      echo "OK  version bumped ${TARGET_V} -> ${HEAD_V}"
