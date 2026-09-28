@@ -1,0 +1,10 @@
+# Managed by bluestack-git-hygiene-checker.
+# Headings for the release notes GitLab's Changelog API generates from the
+# `Changelog:` trailers (Development-Rules CL1, CL3).
+categories:
+  added: Added
+  changed: Changed
+  deprecated: Deprecated
+  removed: Removed
+  fixed: Fixed
+  security: Security
